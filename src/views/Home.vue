@@ -6,15 +6,32 @@
             </div>
         </div>
 
+        <hr/>
+
         <div class="row">
             <div class="col">
                 <b-button v-on:click="connect">Connect</b-button>
+
+                <b-button
+                        v-on:click="overrideNmnemonic = 'fly control dial wisdom lunar dynamic hawk guilt predict guilt earth early'">
+                    Set counterparty
+                </b-button>
+
+                <p class="pt-1">
+                    Override default mnemonic
+                    <b-form-input v-model="overrideNmnemonic"
+                                  placeholder="Provide alternative mnemonic (good to counter party transfer test)">
+                    </b-form-input>
+                </p>
                 <p>
                     Once you’ve set your parameters, call connext.connect() to establish a connection with your
                     channel
                 </p>
                 <div v-if="channel">
                     Free Balance Address <span class="small text-muted">Special account derived for your free balance address.</span>
+                    <p>
+                        <code>{{channel.freeBalanceAddress}}</code>
+                    </p>
                     <p class="text-muted">
                         Whats referenced as the freeBalanceAddress - each app will have its own designated signing key,
                         the freeBalanceAddress is what will be put into the app state, so is what will receive the
@@ -27,13 +44,15 @@
                         // 25446 is 0x6366... or "cf" in ascii, for "Counterfactual". export const CF_PATH =
                         "m/44'/60'/0'/25446";
                     </p>
-                    <code>{{channel.freeBalanceAddress}}</code>
                 </div>
                 <div v-if="channel">
+                    <code>{{channel.publicIdentifier}}</code>
                     <pre>{{channel.network}}</pre>
                 </div>
             </div>
         </div>
+
+        <hr/>
 
         <div class="row">
             <div class="col">
@@ -41,6 +60,8 @@
                 <pre>{{channelData}}</pre>
             </div>
         </div>
+
+        <hr/>
 
         <div class="row">
             <div class="col">
@@ -51,6 +72,7 @@
             </div>
         </div>
 
+        <hr/>
 
         <div class="row">
             <div class="col">
@@ -64,6 +86,8 @@
             </div>
         </div>
 
+        <hr/>
+
         <div class="row">
             <div class="col">
                 <b-button v-on:click="exchange">Exchange</b-button>
@@ -73,9 +97,16 @@
             </div>
         </div>
 
+        <hr/>
+
         <div class="row">
             <div class="col">
-                <b-button v-on:click="transfer">Transfer</b-button>
+                <b-form-input v-model="transferCounterPartyXPub"
+                              placeholder="Counterparty’s xPub identifier (Recipient)">
+                </b-form-input>
+                <p class="pt-1">
+                    <b-button v-on:click="transfer">Transfer</b-button>
+                </p>
                 <p>Recipient is identified by the counterparty’s xPub identifier, which you can find with
                     channel.publicIdentifier.</p>
             </div>
@@ -94,7 +125,9 @@
         data() {
             return {
                 channelData: {},
-                balances: {}
+                balances: {},
+                transferCounterPartyXPub: null,
+                overrideNmnemonic: null,
             };
         },
         computed: {
@@ -102,7 +135,7 @@
         },
         methods: {
             connect() {
-                this.$store.dispatch('initConnextChannel');
+                this.$store.dispatch('initConnextChannel', this.overrideNmnemonic);
             },
             deposit() {
                 this.$store.dispatch('deposit');
@@ -111,7 +144,7 @@
                 this.$store.dispatch('exchange');
             },
             transfer() {
-                this.$store.dispatch('transfer');
+                this.$store.dispatch('transfer', this.transferCounterPartyXPub);
             },
             getChannelInfo() {
                 this.channel.getChannel()

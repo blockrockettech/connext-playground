@@ -51,9 +51,15 @@ export default new Vuex.Store({
                 );
             }
         },
-        async initConnextChannel({commit, dispatch, state}) {
+        async initConnextChannel({commit, dispatch, state}, overrideNmnemonic) {
+            let config = {
+                ...clientConfig
+            };
+            if (overrideNmnemonic) {
+                config.mnemonic = overrideNmnemonic;
+            }
             const channel = await connext.connect({
-                ...clientConfig,
+                ...config,
                 store: {
                     get(path) {
                         return dispatch('getChannelProperty', path);
@@ -73,17 +79,18 @@ export default new Vuex.Store({
             });
         },
         async exchange({commit, dispatch, state}) {
+            console.log(state.channel);
             // Exchanging Wei for Dai
-            await state.channel.exchange({
+            return state.channel.exchange({
                 amount: '0x3abc', // in Wei, represented as bignumber
                 toAssetId: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', // Dai
                 fromAssetId: ethers.constants.AddressZero // ETH
             });
         },
-        async transfer({commit, dispatch, state}) {
-            return await state.channel.transfer({
-                recipient: 'xpub1abcdef',  //counterparty's xPub
-                meta: 'Metadata for transfer',
+        async transfer({commit, dispatch, state}, transferCounterPartyXPub) {
+            return state.channel.transfer({
+                recipient: transferCounterPartyXPub,  //counterparty's xPub
+                meta: 'Metadata for transfer - hello world',
                 amount: '0x3abc', // in Wei, represented as bignumber
                 assetId: ethers.constants.AddressZero // represents ETH
             });
