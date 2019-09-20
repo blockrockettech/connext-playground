@@ -16,7 +16,6 @@
         components: {},
         methods: {},
         created() {
-            this.$store.dispatch('initConnextChannel');
         }
     };
 </script>
