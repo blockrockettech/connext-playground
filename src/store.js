@@ -79,9 +79,8 @@ export default new Vuex.Store({
             });
         },
         async exchange({commit, dispatch, state}) {
-            console.log(state.channel);
             // Exchanging Wei for Dai
-            return state.channel.exchange({
+            return state.channel.swap({
                 amount: '0x3abc', // in Wei, represented as bignumber
                 toAssetId: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', // Dai
                 fromAssetId: ethers.constants.AddressZero // ETH
@@ -94,6 +93,16 @@ export default new Vuex.Store({
                 amount: '0x3abc', // in Wei, represented as bignumber
                 assetId: ethers.constants.AddressZero // represents ETH
             });
+        },
+        async withdraw({commit, dispatch, state}, withdrawAddress) {
+            return state.channel.withdraw({
+                recipient: withdrawAddress,// defaults to signer xpub but can be changed to withdraw to any recipient
+                amount: '0x3abc', // in Wei, represented as bignumber
+                assetId: ethers.constants.AddressZero
+            });
+        },
+        async requestCollateral({commit, dispatch, state}, address) {
+            return state.channel.requestCollateral(address);
         }
     }
 });

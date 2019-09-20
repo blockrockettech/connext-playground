@@ -90,6 +90,20 @@
 
         <div class="row">
             <div class="col">
+                <b-button v-on:click="requestCollateral">Request Collateral</b-button>
+
+                <b-form-input v-model="requestCollateralAddress"
+                              placeholder="Address to request Collateral">
+                </b-form-input>
+
+                <p class="text-primary">requestCollateral()</p>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="row">
+            <div class="col">
                 <b-button v-on:click="exchange">Exchange</b-button>
                 <p>For now, our testnet node is opinionated and only collateralizes each channel with DAI by default.
                     (E.e. only DAI transfers are allowed) If you need ETH transfers, get in touch and we’ll set you up
@@ -111,6 +125,24 @@
                     channel.publicIdentifier.</p>
             </div>
         </div>
+
+        <hr/>
+
+        <div class="row">
+            <div class="col">
+                <b-form-input v-model="withdrawalAddress">
+                </b-form-input>
+                <p class="pt-1">
+                    <b-button v-on:click="withdraw">Withdraw</b-button>
+                </p>
+                <p>
+                    Users can withdraw funds to any recipient address with channel.withdraw(). Right now, the node only
+                    supports withdrawals in ETH to mitigate spam. When withdrawing, DAI that is in your channel is
+                    automatically exchanged for ETH as part of the withdrawal process. If you need DAI (or DAI + ETH)
+                    withdrawals, get in touch and we can activate them for your channels.
+                </p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -128,6 +160,8 @@
                 balances: {},
                 transferCounterPartyXPub: null,
                 overrideNmnemonic: null,
+                withdrawalAddress: null,
+                requestCollateralAddress: null,
             };
         },
         computed: {
@@ -145,6 +179,12 @@
             },
             transfer() {
                 this.$store.dispatch('transfer', this.transferCounterPartyXPub);
+            },
+            withdraw() {
+                this.$store.dispatch('withdraw', this.withdrawalAddress);
+            },
+            requestCollateral() {
+                this.$store.dispatch('requestCollateral', this.requestCollateralAddress);
             },
             getChannelInfo() {
                 this.channel.getChannel()
