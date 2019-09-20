@@ -22,11 +22,17 @@
             </div>
         </div>
 
-
         <div class="row">
             <div class="col">
                 <b-button v-on:click="getChannelInfo">Get Channel Info</b-button>
                 <pre>{{channelData}}</pre>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <b-button v-on:click="getChannelBalance">Get Balance</b-button> (in wei)
+                <pre>{{balances}}</pre>
             </div>
         </div>
 
@@ -64,13 +70,15 @@
 <script>
 
     import {mapState} from 'vuex';
+    import * as _ from 'lodash';
 
     export default {
         name: 'home',
         components: {},
         data() {
             return {
-                channelData: {}
+                channelData: {},
+                balances: {}
             };
         },
         computed: {
@@ -90,9 +98,19 @@
                 this.$store.dispatch('transfer');
             },
             getChannelInfo() {
-                return this.channel.getChannel()
+                this.channel.getChannel()
                     .then((data) => {
                         this.channelData = data;
+                    });
+            },
+            getChannelBalance() {
+                return this.channel.getFreeBalance()
+                    .then((data) => {
+                        let balances = {};
+                        _.forEach(data, (value, key) => {
+                            balances[key] = value.toString();
+                        });
+                        this.balances = balances;
                     });
             }
         }
