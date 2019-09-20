@@ -10,19 +10,8 @@
 
         <div class="row">
             <div class="col">
-                <b-button v-on:click="connect">Connect</b-button>
-
-                <b-button
-                        v-on:click="overrideNmnemonic = 'fly control dial wisdom lunar dynamic hawk guilt predict guilt earth early'">
-                    Set counterparty
-                </b-button>
-
-                <p class="pt-1">
-                    Override default mnemonic
-                    <b-form-input v-model="overrideNmnemonic"
-                                  placeholder="Provide alternative mnemonic (good to counter party transfer test)">
-                    </b-form-input>
-                </p>
+                <b-button v-on:click="connect">Connect Sender</b-button>
+                <b-button v-on:click="connectReceiver" class="ml-2">Connect Receiver</b-button>
                 <p>
                     Once you’ve set your parameters, call connext.connect() to establish a connection with your
                     channel
@@ -169,7 +158,10 @@
         },
         methods: {
             connect() {
-                this.$store.dispatch('initConnextChannel', this.overrideNmnemonic);
+                this.$store.dispatch('initConnextChannel');
+            },
+            connectReceiver() {
+                this.$store.dispatch('initConnextChannel', process.env.VUE_APP_RECEIVER_KEY);
             },
             deposit() {
                 this.$store.dispatch('deposit');

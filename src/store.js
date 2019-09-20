@@ -102,6 +102,11 @@ export default new Vuex.Store({
             });
         },
         async requestCollateral({commit, dispatch, state}, address) {
+            await state.channel.addPaymentProfile({
+                assetId: string,
+                minimumMaintainedCollateral: '0x3abc',
+                amountToCollateralize: true
+            });
             return state.channel.requestCollateral(address);
         }
     }
