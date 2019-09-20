@@ -13,10 +13,23 @@
                     Once you’ve set your parameters, call connext.connect() to establish a connection with your
                     channel
                 </p>
-                <div v-if="channel">freeBalanceAddress
-                    <pre>{{channel.freeBalanceAddress}}</pre>
+                <div v-if="channel">
+                    Free Balance Address <span class="small text-muted">Special account derived for your free balance address.</span>
+                    <p class="text-muted">
+                        Whats referenced as the freeBalanceAddress - each app will have its own designated signing key,
+                        the freeBalanceAddress is what will be put into the app state, so is what will receive the
+                        funds in the event of a dispute.
+                    </p>
+                    <p class="text-muted">
+                        You can withdraw to any address that you want though.
+                    </p>
+                    <p class="text-muted">
+                        // 25446 is 0x6366... or "cf" in ascii, for "Counterfactual". export const CF_PATH =
+                        "m/44'/60'/0'/25446";
+                    </p>
+                    <code>{{channel.freeBalanceAddress}}</code>
                 </div>
-                <div v-if="channel">network
+                <div v-if="channel">
                     <pre>{{channel.network}}</pre>
                 </div>
             </div>
@@ -31,7 +44,9 @@
 
         <div class="row">
             <div class="col">
-                <b-button v-on:click="getChannelBalance">Get Balance</b-button> (in wei)
+                <b-button v-on:click="getChannelBalance">Get Balance</b-button>
+                (in wei)
+                <p class="text-primary">Get balances for your channel</p>
                 <pre>{{balances}}</pre>
             </div>
         </div>
@@ -39,8 +54,9 @@
 
         <div class="row">
             <div class="col">
-                <b-button v-on:click="deposit">Deposit</b-button>
-                <p>
+                <b-button v-on:click="deposit">Deposit into Channel</b-button>
+                <p class="text-primary">Deposit from on-chain into multi-sig which populates your channel</p>
+                <p class="text-muted">
                     After instantiating and starting Connext, you can deposit into a channel with channel.deposit. Our
                     hosted node accepts deposits in ETH and all ERC20 tokens. However, when depositing tokens, ensure
                     the user has sufficient ETH remaining in their wallet to afford the gas of the deposit transaction.
